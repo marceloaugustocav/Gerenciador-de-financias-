@@ -1,0 +1,118 @@
+using System;
+using System.Collections.Generic;
+
+class PersonalFinanceApp
+{
+    static List<Transaction> transactions = new List<Transaction>();
+    static decimal budget = 0;
+
+    static void Main(string[] args)
+    {
+        while (true)
+        {
+            Console.WriteLine("===== Aplicativo de Gerenciamento Financeiro Pessoal =====");
+            Console.WriteLine("1. Adicionar transação");
+            Console.WriteLine("2. Definir orçamento");
+            Console.WriteLine("3. Exibir relatório financeiro");
+            Console.WriteLine("4. Sair");
+
+            Console.Write("Selecione uma opção: ");
+            string option = Console.ReadLine();
+
+            Console.WriteLine();
+
+            switch (option)
+            {
+                case "1":
+                    AddTransaction();
+                    break;
+                case "2":
+                    SetBudget();
+                    break;
+                case "3":
+                    DisplayFinancialReport();
+                    break;
+                case "4":
+                    Environment.Exit(0);
+                    break;
+                default:
+                    Console.WriteLine("Opção inválida. Por favor, selecione uma opção válida.");
+                    break;
+            }
+
+            Console.WriteLine();
+        }
+    }
+
+    static void AddTransaction()
+    {
+        Console.WriteLine("===== Adicionar Transação =====");
+        Console.Write("Tipo (Receita/Despesa): ");
+        string type = Console.ReadLine();
+        Console.Write("Valor: ");
+        decimal amount = decimal.Parse(Console.ReadLine());
+        Console.Write("Data (dd/mm/yyyy): ");
+        DateTime date = DateTime.ParseExact(Console.ReadLine(), "dd/MM/yyyy", null);
+
+        Transaction transaction = new Transaction(type, amount, date);
+        transactions.Add(transaction);
+
+        Console.WriteLine("Transação adicionada com sucesso!");
+    }
+
+    static void SetBudget()
+    {
+        Console.WriteLine("===== Definir Orçamento =====");
+        Console.Write("Digite o valor do orçamento: ");
+        budget = decimal.Parse(Console.ReadLine());
+
+        Console.WriteLine("Orçamento definido com sucesso!");
+    }
+
+    static void DisplayFinancialReport()
+    {
+        Console.WriteLine("===== Relatório Financeiro =====");
+
+        decimal totalIncome = 0;
+        decimal totalExpenses = 0;
+
+        foreach (Transaction transaction in transactions)
+        {
+            if (transaction.Type == "Receita")
+            {
+                totalIncome += transaction.Amount;
+            }
+            else if (transaction.Type == "Despesa")
+            {
+                totalExpenses += transaction.Amount;
+            }
+        }
+
+        decimal totalBalance = totalIncome - totalExpenses;
+
+        Console.WriteLine($"Receitas: {totalIncome:C}");
+        Console.WriteLine($"Despesas: {totalExpenses:C}");
+        Console.WriteLine($"Saldo: {totalBalance:C}");
+
+        if (budget > 0)
+        {
+            decimal remainingBudget = budget - totalExpenses;
+            Console.WriteLine($"Orçamento: {budget:C}");
+            Console.WriteLine($"Orçamento Restante: {remainingBudget:C}");
+        }
+    }
+}
+
+class Transaction
+{
+    public string Type { get; set; }
+    public decimal Amount { get; set; }
+    public DateTime Date { get; set; }
+
+    public Transaction(string type, decimal amount, DateTime date)
+    {
+        Type = type;
+        Amount = amount;
+        Date = date;
+    }
+}
